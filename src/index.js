@@ -1,4 +1,5 @@
 import './css/index.css';
+import Notiflix from 'notiflix';
 import ImageApiService from "./api-search-image";
 
 const refs = {
@@ -13,18 +14,17 @@ const imageApiService = new ImageApiService();
 refs.searchForm.addEventListener('submit', onSearch);
 refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
-
-
 function onSearch(evt) {
     evt.preventDefault();
     clearImageGallery();
     refs.loadMoreBtn.classList.add("is-hidden");
     imageApiService.query = evt.currentTarget.elements.searchQuery.value;
     if (imageApiService.query === '') {
-        return alert('Please enter valid data!')
+        return Notiflix.Notify.warning('Please enter valid data!');
     }
-    imageApiService.resetPage();
+    imageApiService.resetPage(); 
     imageApiService.fetchArticles().then(hits => { 
+        Notiflix.Notify.success(`Hooray! We found ${imageApiService.total_hits} images.`);
         console.log(imageApiService);
         createImageGallery(hits);
         if (imageApiService.per_page<imageApiService.total_hits) {
@@ -35,10 +35,15 @@ function onSearch(evt) {
 };
 
 function onLoadMore() { 
+    if (Math.ceil(imageApiService.total_hits/imageApiService.per_page)===imageApiService.page) {
+        refs.loadMoreBtn.classList.add("is-hidden");
+        Notiflix.Notify.info(`We are sorry, but you've reached the end of search results.`);  
+    }
     imageApiService.fetchArticles().then(createImageGallery);
 }
 
 function clearImageGallery() { 
+    
     refs.photoGallery.innerHTML = '';
 }
 

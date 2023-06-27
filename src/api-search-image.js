@@ -1,3 +1,5 @@
+import Notiflix from 'notiflix';
+
 const refs = {
     MAIN_URL: 'https://pixabay.com/api/',
     API_KEY: '37838198-1a117cc0732e6b102a4c5cb6d',
@@ -28,6 +30,9 @@ export default class ImageApiService {
         return response.json();
         })
             .then(data => {
+                if (data.totalHits === 0) {
+                    Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+                }
                 this.total_hits = data.totalHits;
                 this.page += 1;
                 return data.hits;
