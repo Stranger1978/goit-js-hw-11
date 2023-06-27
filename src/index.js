@@ -25,7 +25,6 @@ function onSearch(evt) {
     imageApiService.resetPage(); 
     imageApiService.fetchArticles().then(hits => { 
         Notiflix.Notify.success(`Hooray! We found ${imageApiService.total_hits} images.`);
-        console.log(imageApiService);
         createImageGallery(hits);
         if (imageApiService.per_page<imageApiService.total_hits) {
        refs.loadMoreBtn.classList.remove("is-hidden");     
